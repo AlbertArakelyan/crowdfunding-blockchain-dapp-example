@@ -20,15 +20,10 @@ const Project = () => {
     params: [Number(id)],
   });
 
-  console.log(111, donations);
-  
-
   const [value, setValue] = useState('');
 
   const project = projects && projects[Number(id)];
 
-  console.log('project', project, value);
-  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };

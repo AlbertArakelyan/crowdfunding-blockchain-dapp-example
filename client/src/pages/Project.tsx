@@ -20,6 +20,9 @@ const Project = () => {
     params: [Number(id)],
   });
 
+  console.log(111, donations);
+  
+
   const [value, setValue] = useState('');
 
   const project = projects && projects[Number(id)];
@@ -44,11 +47,12 @@ const Project = () => {
     }
 
     const normalizedDonations = [];
+    const numberOfDonations = (donations as any)[0].length;
 
-    for (let i = 0; i < donations.length; i++) {
+    for (let i = 0; i < numberOfDonations; i++) {
       normalizedDonations.push({
         donator: (donations as any)[0][i],
-        donation: parseFloat(ethers.formatEther((donations as any)[1][i].toString())),
+        donation: ethers.formatEther((donations as any)[1][i].toString()),
       });
     }
 

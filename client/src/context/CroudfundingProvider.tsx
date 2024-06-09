@@ -17,14 +17,15 @@ const initialFormState = {
 
 const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
   const activeAccount = useActiveAccount();
-  const { mutate: sendTransaction, isError } = useSendTransaction({
-  });
+  const { mutate: sendTransaction, isError, data: transactionData } = useSendTransaction();
   const { data: projects, isLoading } = useReadContract({ 
     contract, 
     //@ts-ignore
     method: resolveMethod("getCampaigns"), 
     params: [] 
   });
+
+  console.log('transactionData', transactionData);
 
   const [isAddProjectFormVisible, setIsAddProjectFormVisible] = useState(false);
   const [formData, setFormData] = useState(initialFormState);
@@ -65,9 +66,7 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
         params: [_owner, _title, _description, _target, _deadline, _image],
       });
 
-      const obj = await sendTransaction(transaction);
-
-      console.log('transaction', transaction, obj);
+      await sendTransaction(transaction);
 
       setFormData(initialFormState);
       setIsAddProjectFormVisible(false);
@@ -89,9 +88,8 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
       method: resolveMethod("donateToCampaign"), 
       params: [_id] 
     });
-    const obj = await sendTransaction(transaction);
 
-    console.log('transaction', transaction, obj);
+    await sendTransaction(transaction);
   };
 
   return (

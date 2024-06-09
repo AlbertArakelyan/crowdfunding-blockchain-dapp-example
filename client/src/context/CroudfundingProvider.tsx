@@ -1,6 +1,7 @@
 import React, { FC, PropsWithChildren, createContext, useContext, useState, useCallback } from 'react';
 import { prepareContractCall, resolveMethod } from "thirdweb";
 import { useSendTransaction, useReadContract, useActiveAccount } from "thirdweb/react";
+import { ethers } from "ethers";
 import { contract } from "../client";
 
 const CroudfundingContext = createContext<any>(null);
@@ -18,6 +19,7 @@ const initialFormState = {
 const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
   const activeAccount = useActiveAccount();
   const { mutate: sendTransaction, isError, data: transactionData } = useSendTransaction();
+
   const { data: projects, isLoading } = useReadContract({ 
     contract, 
     //@ts-ignore
@@ -56,7 +58,7 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
       const _owner = formData.owner;
       const _title = formData.title;
       const _description = formData.description;
-      const _target = formData.target;
+      const _target = ethers.parseUnits(formData.target.toString(), 18);
       const _deadline = Date.now() + 365 * 24 * 60 * 60 * 1000;
       const _image = formData.image;
 
@@ -75,7 +77,7 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  const donateToCampaign = async (id: number) => {
+  const donateToCampaign = async (id: number, amount = '0.0001') => {
     if (!activeAccount) {
       return alert("Please connect your wallet");
     }
@@ -84,7 +86,8 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const transaction = await prepareContractCall({ 
       contract,
-      value: 1n, // becomes msg.value on contract
+      // correct calculation
+      value: ethers.parseUnits(amount, 18), // becomes msg.value on contract
       method: resolveMethod("donateToCampaign"), 
       params: [_id] 
     });

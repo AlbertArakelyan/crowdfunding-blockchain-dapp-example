@@ -6,8 +6,6 @@ import { useCroudfundingContext } from "../context/CroudfundingProvider";
 const Projects = () => {
   const { projects, isAddProjectFormVisible, handleToggleAddProjectForm } = useCroudfundingContext();
 
-
-
   return (
     <div className="flex flex-col items-center justify-start mb-6">
       <div className="flex items-center justify-center mb-6">

@@ -1,7 +1,7 @@
-import { ConnectButton } from "thirdweb/react";
+import { Routes, Route } from "react-router-dom";
 import thirdwebIcon from "./thirdweb.svg";
-import { client } from "./client";
-import Projects from "./components/Projects";
+import Home from "./pages/Home";
+import Project from "./pages/Project";
 
 export function App() {
   return (
@@ -9,17 +9,10 @@ export function App() {
       <div className="py-20">
         <Header />
 
-        <div className="flex justify-center mb-20">
-          <ConnectButton
-            client={client}
-            appMetadata={{
-              name: "Example app",
-              url: "https://example.com",
-            }}
-          />
-        </div>
-
-        <Projects />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/projects/:id" element={<Project />} />
+        </Routes>
 
         <ThirdwebResources />
       </div>

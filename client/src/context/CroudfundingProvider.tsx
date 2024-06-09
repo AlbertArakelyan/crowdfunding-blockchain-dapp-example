@@ -54,7 +54,7 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
       const _title = formData.title;
       const _description = formData.description;
       const _target = formData.target;
-      const _deadline = Date.now() + 1000 * 60 * 60 * 24 * 7;
+      const _deadline = Date.now() + 365 * 24 * 60 * 60 * 1000;
       const _image = formData.image;
 
       console.log(formData);

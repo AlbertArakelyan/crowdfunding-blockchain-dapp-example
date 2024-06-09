@@ -1,6 +1,6 @@
 import React, { FC, PropsWithChildren, createContext, useContext, useState, useCallback } from 'react';
 import { prepareContractCall, resolveMethod } from "thirdweb";
-import { useSendTransaction, useReadContract } from "thirdweb/react";
+import { useSendTransaction, useReadContract, useActiveAccount } from "thirdweb/react";
 import { contract } from "../client";
 
 const CroudfundingContext = createContext<any>(null);
@@ -16,6 +16,7 @@ const initialFormState = {
 };
 
 const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
+  const activeAccount = useActiveAccount();
   const { mutate: sendTransaction, isError } = useSendTransaction({
   });
   const { data: projects, isLoading } = useReadContract({ 
@@ -24,9 +25,6 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
     method: resolveMethod("getCampaigns"), 
     params: [] 
   });
-
-  console.log('projects', projects);
-  
 
   const [isAddProjectFormVisible, setIsAddProjectFormVisible] = useState(false);
   const [formData, setFormData] = useState(initialFormState);
@@ -50,6 +48,10 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const createProject = async () => {
     try {
+      if (!activeAccount) {
+        return alert("Please connect your wallet");
+      }
+
       const _owner = formData.owner;
       const _title = formData.title;
       const _description = formData.description;
@@ -57,13 +59,10 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
       const _deadline = Date.now() + 365 * 24 * 60 * 60 * 1000;
       const _image = formData.image;
 
-      console.log(formData);
-      
-
       const transaction = await prepareContractCall({ 
         contract, 
         method: resolveMethod("createCampaign"),
-        params: [_owner, _title, _description, _target, _deadline, _image] 
+        params: [_owner, _title, _description, _target, _deadline, _image],
       });
 
       const obj = await sendTransaction(transaction);
@@ -78,7 +77,11 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   const donateToCampaign = async (id: number) => {
-  const _id = id;
+    if (!activeAccount) {
+      return alert("Please connect your wallet");
+    }
+
+    const _id = id;
 
     const transaction = await prepareContractCall({ 
       contract,

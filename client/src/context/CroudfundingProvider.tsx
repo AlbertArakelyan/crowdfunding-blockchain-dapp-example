@@ -20,6 +20,7 @@ const CroudfundingProvider: FC<PropsWithChildren> = ({ children }) => {
   });
   const { data: projects, isLoading } = useReadContract({ 
     contract, 
+    //@ts-ignore
     method: resolveMethod("getCampaigns"), 
     params: [] 
   });

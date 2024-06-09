@@ -20,7 +20,7 @@ const Projects = () => {
       {isAddProjectFormVisible && <AddProjectForm />}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {/* TODO create AllProjects page and control splicing by props (on that page render all) */}
-        {projects && projects.slice(-4).map((c: any, index: number) => <ProjectCard key={index} {...c} id={index} />).reverse()}
+        {projects && projects.map((c: any, index: number) => <ProjectCard key={index} {...c} id={index} />).reverse()}
       </div>
     </div>
   );
